@@ -142,27 +142,50 @@ export default function Insights({
                 </tr>
               </thead>
               <tbody className="text-sm">
-                <tr className="border-b border-slate-800/50 hover:bg-secondary/5 transition-colors">
-                  <td className="py-3 font-bold text-secondary">01</td>
-                  <td className="py-3 text-slate-300">SleepMaster #42</td>
-                  <td className="py-3 text-right font-mono text-primary font-bold">
-                    99.4
-                  </td>
-                </tr>
-                <tr className="border-b border-slate-800/50 hover:bg-secondary/5 transition-colors">
-                  <td className="py-3 font-bold text-slate-400">02</td>
-                  <td className="py-3 text-slate-300">StellarSleep #09</td>
-                  <td className="py-3 text-right font-mono text-primary/80">
-                    98.1
-                  </td>
-                </tr>
-                <tr className="hover:bg-secondary/5 transition-colors">
-                  <td className="py-3 font-bold text-slate-400">03</td>
-                  <td className="py-3 text-slate-300">ZenSleeper #14</td>
-                  <td className="py-3 text-right font-mono text-primary/80">
-                    97.8
-                  </td>
-                </tr>
+                {[
+                  { name: "SleepMaster #42", score: 99.4, isUser: false },
+                  { name: "StellarSleep #09", score: 98.1, isUser: false },
+                  { name: "ZenSleeper #14", score: 97.8, isUser: false },
+                  { name: "You", score: readinessScore, isUser: true },
+                ]
+                  .sort((a, b) => b.score - a.score)
+                  .slice(0, 3)
+                  .map((player, index) => (
+                    <tr
+                      key={player.name}
+                      className={`border-b border-slate-800/50 hover:bg-secondary/5 transition-colors ${
+                        player.isUser ? "bg-slate-800/20" : ""
+                      }`}
+                    >
+                      <td
+                        className={`py-3 font-bold ${
+                          index === 0
+                            ? "text-secondary"
+                            : player.isUser
+                              ? "text-primary ml-2 block"
+                              : "text-slate-400"
+                        }`}
+                      >
+                        {String(index + 1).padStart(2, "0")}
+                      </td>
+                      <td
+                        className={`py-3 ${
+                          player.isUser
+                            ? "text-primary font-bold"
+                            : "text-slate-300"
+                        }`}
+                      >
+                        {player.name}
+                      </td>
+                      <td
+                        className={`py-3 text-right font-mono font-bold ${
+                          index === 0 ? "text-primary" : "text-primary/80"
+                        }`}
+                      >
+                        {player.score.toFixed(1)}
+                      </td>
+                    </tr>
+                  ))}
               </tbody>
             </table>
           </div>
@@ -351,6 +374,7 @@ export default function Insights({
       <FullRankingsModal
         isOpen={isRankingsOpen}
         onClose={() => setIsRankingsOpen(false)}
+        userScore={readinessScore}
       />
     </div>
   );

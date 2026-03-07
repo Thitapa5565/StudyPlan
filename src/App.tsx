@@ -147,7 +147,7 @@ export default function App() {
   const hardStopTime = calculateHardStop(sleepSchedule.bedtime);
 
   // App-wide score state
-  const [readinessScore, setReadinessScore] = useState(100);
+  const [readinessScore, setReadinessScore] = useState(10);
 
   return (
     <div className="min-h-screen bg-background-dark text-slate-100 font-display selection:bg-primary/30">
