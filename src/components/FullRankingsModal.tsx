@@ -1,25 +1,39 @@
-import { X, Trophy } from 'lucide-react';
+import { X, Trophy } from "lucide-react";
 
 interface FullRankingsModalProps {
   isOpen: boolean;
   onClose: () => void;
+  userScore: number;
 }
 
-const FULL_RANKINGS = [
-  { rank: 1, name: 'SleepMaster #42', score: 99.4, change: '+2' },
-  { rank: 2, name: 'StellarSleep #09', score: 98.1, change: '-' },
-  { rank: 3, name: 'ZenSleeper #14', score: 97.8, change: '-1' },
-  { rank: 4, name: 'DreamCatcher', score: 96.5, change: '+4' },
-  { rank: 5, name: 'NightOwl_99', score: 95.2, change: '-2' },
-  { rank: 6, name: 'RestfulMind', score: 94.8, change: '+1' },
-  { rank: 7, name: 'DeepSleep_Pro', score: 93.9, change: '-' },
-  { rank: 8, name: 'LucidDreamer', score: 92.4, change: '-3' },
-  { rank: 9, name: 'SleepWalker', score: 91.1, change: '+5' },
-  { rank: 10, name: 'SnoozeButton', score: 89.5, change: '-1' },
+const BASE_RANKINGS = [
+  { name: "SleepMaster #42", score: 99.4, change: "+2", isUser: false },
+  { name: "StellarSleep #09", score: 98.1, change: "-", isUser: false },
+  { name: "ZenSleeper #14", score: 97.8, change: "-1", isUser: false },
+  { name: "DreamCatcher", score: 96.5, change: "+4", isUser: false },
+  { name: "NightOwl_99", score: 95.2, change: "-2", isUser: false },
+  { name: "RestfulMind", score: 94.8, change: "+1", isUser: false },
+  { name: "DeepSleep_Pro", score: 93.9, change: "-", isUser: false },
+  { name: "LucidDreamer", score: 92.4, change: "-3", isUser: false },
+  { name: "SleepWalker", score: 91.1, change: "+5", isUser: false },
+  { name: "SnoozeButton", score: 89.5, change: "-1", isUser: false },
 ];
 
-export default function FullRankingsModal({ isOpen, onClose }: FullRankingsModalProps) {
+export default function FullRankingsModal({
+  isOpen,
+  onClose,
+  userScore,
+}: FullRankingsModalProps) {
   if (!isOpen) return null;
+
+  // Combine base rankings with user, sort, and slice to top 10
+  const combinedRankings = [
+    ...BASE_RANKINGS,
+    { name: "You", score: userScore, change: "NEW", isUser: true },
+  ]
+    .sort((a, b) => b.score - a.score)
+    .slice(0, 10)
+    .map((user, index) => ({ ...user, rank: index + 1 }));
 
   return (
     <div className="fixed inset-0 z-50 flex items-end justify-center sm:items-center bg-black/60 backdrop-blur-sm">
@@ -34,7 +48,7 @@ export default function FullRankingsModal({ isOpen, onClose }: FullRankingsModal
               <p className="text-xs text-slate-400">Top Sleep Performers</p>
             </div>
           </div>
-          <button 
+          <button
             onClick={onClose}
             className="p-2 rounded-full hover:bg-slate-800 transition-colors text-slate-400 hover:text-white"
           >
@@ -46,21 +60,54 @@ export default function FullRankingsModal({ isOpen, onClose }: FullRankingsModal
           <table className="w-full text-left border-collapse">
             <thead>
               <tr className="border-b border-slate-800/50">
-                <th className="py-3 text-[10px] font-bold text-slate-500 uppercase tracking-wider w-12">Rank</th>
-                <th className="py-3 text-[10px] font-bold text-slate-500 uppercase tracking-wider">Pro Name</th>
-                <th className="py-3 text-[10px] font-bold text-slate-500 uppercase tracking-wider text-right">Score</th>
+                <th className="py-3 text-[10px] font-bold text-slate-500 uppercase tracking-wider w-12">
+                  Rank
+                </th>
+                <th className="py-3 text-[10px] font-bold text-slate-500 uppercase tracking-wider">
+                  Pro Name
+                </th>
+                <th className="py-3 text-[10px] font-bold text-slate-500 uppercase tracking-wider text-right">
+                  Score
+                </th>
               </tr>
             </thead>
             <tbody className="text-sm">
-              {FULL_RANKINGS.map((user) => (
-                <tr key={user.rank} className="border-b border-slate-800/50 hover:bg-secondary/5 transition-colors group">
-                  <td className={`py-4 font-bold ${user.rank <= 3 ? (user.rank === 1 ? 'text-yellow-400' : user.rank === 2 ? 'text-slate-300' : 'text-amber-600') : 'text-slate-500'}`}>
-                    {user.rank.toString().padStart(2, '0')}
+              {combinedRankings.map((user) => (
+                <tr
+                  key={user.name}
+                  className={`border-b border-slate-800/50 hover:bg-secondary/5 transition-colors group ${
+                    user.isUser ? "bg-slate-800/20" : ""
+                  }`}
+                >
+                  <td
+                    className={`py-4 font-bold ${
+                      user.isUser
+                        ? "text-primary"
+                        : user.rank <= 3
+                          ? user.rank === 1
+                            ? "text-yellow-400"
+                            : user.rank === 2
+                              ? "text-slate-300"
+                              : "text-amber-600"
+                          : "text-slate-500"
+                    }`}
+                  >
+                    {user.rank.toString().padStart(2, "0")}
                   </td>
-                  <td className="py-4 text-slate-300 font-medium group-hover:text-white transition-colors">
+                  <td
+                    className={`py-4 font-medium transition-colors ${
+                      user.isUser
+                        ? "text-primary font-bold"
+                        : "text-slate-300 group-hover:text-white"
+                    }`}
+                  >
                     {user.name}
                   </td>
-                  <td className="py-4 text-right font-mono text-primary font-bold">
+                  <td
+                    className={`py-4 text-right font-mono font-bold ${
+                      user.isUser ? "text-primary" : "text-primary/80"
+                    }`}
+                  >
                     {user.score.toFixed(1)}
                   </td>
                 </tr>
