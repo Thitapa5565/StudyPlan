@@ -361,10 +361,36 @@ export default function Insights({
             </span>
           </div>
           <p className="text-sm text-slate-300 leading-relaxed">
-            Your circadian rhythm indicates a 15% increase in focus if you
-            maintain a {formattedBedtime} bedtime tonight. Recovery from current
-            sleep debt is expected in{" "}
-            <span className="text-primary font-bold">2 days</span>.
+            {readinessScore >= 80 ? (
+              <>
+                Your circadian rhythm indicates optimal alignment! Maintaining a{" "}
+                <span className="text-primary font-bold">
+                  {formattedBedtime}
+                </span>{" "}
+                bedtime tonight will help you sustain this peak performance
+                state.
+              </>
+            ) : readinessScore >= 60 ? (
+              <>
+                Your focus is moderate. Shifting your sleep schedule back
+                towards a{" "}
+                <span className="text-primary font-bold">
+                  {formattedBedtime}
+                </span>{" "}
+                bedtime tonight could result in a 15% increase in focus
+                tomorrow.
+              </>
+            ) : (
+              <>
+                Warning: Significant sleep debt detected. Prioritize rest
+                immediately. Aiming for a{" "}
+                <span className="text-red-400 font-bold">
+                  {formattedBedtime}
+                </span>{" "}
+                bedtime tonight is critical. Full recovery is expected in{" "}
+                <span className="text-primary font-bold">2-3 days</span>.
+              </>
+            )}
           </p>
         </section>
       </main>

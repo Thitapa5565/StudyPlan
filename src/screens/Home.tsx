@@ -358,9 +358,7 @@ export default function Home({
             <motion.h1
               animate={isPetting ? { color: "#2BEE9D" } : { color: "#f1f5f9" }}
               className="text-2xl font-bold tracking-tight transition-colors duration-300"
-            >
-              Hootie
-            </motion.h1>
+            ></motion.h1>
             <p className="text-sm font-medium text-primary">
               Level 12 Sleeper •{" "}
               {score >= 80
@@ -368,9 +366,6 @@ export default function Home({
                 : score >= 60
                   ? "Tired but okay"
                   : "Needs sleep"}
-            </p>
-            <p className="text-[10px] text-slate-500 mt-1 uppercase tracking-wider">
-              Tap to pet
             </p>
           </div>
         </motion.div>
@@ -436,7 +431,7 @@ export default function Home({
             </div>
             <div className="flex-1 z-10">
               <p className="text-base font-semibold text-slate-100 leading-tight">
-                Advanced Biochemistry
+                Advanced Data Structures
               </p>
               <p className="text-sm text-slate-400 mt-0.5">
                 Tomorrow, 09:00 AM
