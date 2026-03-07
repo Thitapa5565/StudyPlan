@@ -125,7 +125,14 @@ export default function AcademicSchedule({
 
     if (diff < 90) {
       needsAdjustment = true;
-      recommendedBedtimeMinutes = (latestClassEndMinutes + 90) % (24 * 60);
+      let newRec = (latestClassEndMinutes + 90) % (24 * 60);
+
+      // Enforce minimum recommended bedtime of 22:00 (4 ทุ่ม)
+      if (newRec > 12 * 60 && newRec < 22 * 60) {
+        newRec = 22 * 60;
+      }
+
+      recommendedBedtimeMinutes = newRec;
     }
   }
 
