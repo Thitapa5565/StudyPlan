@@ -29,21 +29,15 @@ export default function Profile({ onNavigate, onBellClick }: ProfileProps) {
       <main className="flex-1 overflow-y-auto">
         <section className="flex flex-col items-center px-6 mb-8">
           <div className="relative mb-4">
-            <div className="w-28 h-28 rounded-full border-2 border-primary p-1">
-              <div
-                className="w-full h-full rounded-full bg-cover bg-center"
-                style={{
-                  backgroundImage:
-                    "url('https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=400&auto=format&fit=crop')",
-                }}
-              ></div>
+            <div className="w-28 h-28 rounded-full border-2 border-primary p-1 flex items-center justify-center bg-primary/10">
+              <div className="text-6xl font-bold text-primary">S</div>
             </div>
             <div className="absolute -bottom-1 -right-1 bg-yellow-400 text-background-dark text-[10px] font-bold px-2 py-1 rounded-full border-2 border-background-dark flex items-center gap-1">
               <Star size={12} className="fill-background-dark" />
               PRO
             </div>
           </div>
-          <h2 className="text-2xl font-bold text-slate-100">Julian Sterling</h2>
+          <h2 className="text-2xl font-bold text-slate-100">SleepMaster</h2>
         </section>
 
         <section className="px-6 space-y-3">

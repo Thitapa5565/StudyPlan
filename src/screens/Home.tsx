@@ -4,12 +4,15 @@ import BottomNav from "../components/BottomNav";
 import { SleepSchedule } from "../types";
 import { motion } from "framer-motion";
 import { useState } from "react";
+import Sidebar from "../components/Sidebar";
 
 interface HomeProps {
   onNavigate: (screen: Screen) => void;
   sleepSchedule?: SleepSchedule;
   onBellClick?: () => void;
   readinessScore: number;
+  studyStreak: number;
+  sleepConsistency: number;
 }
 
 // Interactive SVG Owl component
@@ -243,8 +246,11 @@ export default function Home({
   sleepSchedule,
   onBellClick,
   readinessScore,
+  studyStreak,
+  sleepConsistency,
 }: HomeProps) {
   const [isPetting, setIsPetting] = useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const score = readinessScore;
 
   const calculateDuration = (start: string, end: string) => {
@@ -300,7 +306,10 @@ export default function Home({
         animate={{ opacity: 1, y: 0 }}
         className="flex items-center justify-between p-6"
       >
-        <button className="w-10 h-10 flex items-center justify-center rounded-full bg-card-dark border border-slate-800 text-slate-100 active:scale-95 transition-transform">
+        <button
+          onClick={() => setIsSidebarOpen(true)}
+          className="w-10 h-10 flex items-center justify-center rounded-full bg-card-dark border border-slate-800 text-slate-100 active:scale-95 transition-transform"
+        >
           <Menu size={20} />
         </button>
         <h2 className="text-lg font-bold text-slate-100">RestReady</h2>
@@ -458,9 +467,12 @@ export default function Home({
               <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider group-hover:text-slate-300 transition-colors">
                 Study Streak
               </p>
-              <p className="text-lg font-bold text-slate-100">12 Days</p>
+              <p className="text-lg font-bold text-slate-100">
+                {studyStreak} Days
+              </p>
             </div>
           </motion.div>
+
           <motion.div
             onClick={() => onNavigate("insights")}
             whileHover={{ scale: 1.05, y: -4 }}
@@ -474,7 +486,9 @@ export default function Home({
               <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider group-hover:text-slate-300 transition-colors">
                 Consistency
               </p>
-              <p className="text-lg font-bold text-slate-100">5 Days</p>
+              <p className="text-lg font-bold text-slate-100">
+                {sleepConsistency}%
+              </p>
             </div>
             <div className="absolute -right-2 -bottom-2 opacity-10 group-hover:rotate-12 transition-transform">
               <Moon size={48} className="fill-current" />
@@ -484,6 +498,12 @@ export default function Home({
       </motion.div>
 
       <BottomNav currentScreen="home" onNavigate={onNavigate} />
+
+      <Sidebar
+        isOpen={isSidebarOpen}
+        onClose={() => setIsSidebarOpen(false)}
+        onNavigate={onNavigate}
+      />
     </div>
   );
 }

@@ -148,6 +148,8 @@ export default function App() {
 
   // App-wide score state
   const [readinessScore, setReadinessScore] = useState(80);
+  const [studyStreak, setStudyStreak] = useState(12); // Mock initial value
+  const [sleepConsistency, setSleepConsistency] = useState(85); // Mock initial value
 
   return (
     <div className="min-h-screen bg-background-dark text-slate-100 font-display selection:bg-primary/30">
@@ -159,6 +161,8 @@ export default function App() {
           sleepSchedule={sleepSchedule}
           onBellClick={handleBellClick}
           readinessScore={readinessScore}
+          studyStreak={studyStreak}
+          sleepConsistency={sleepConsistency}
         />
       )}
       {currentScreen === "planner" && (
