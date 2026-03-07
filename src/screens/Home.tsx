@@ -9,14 +9,243 @@ interface HomeProps {
   onNavigate: (screen: Screen) => void;
   sleepSchedule?: SleepSchedule;
   onBellClick?: () => void;
+  readinessScore: number;
 }
+
+// Interactive SVG Owl component
+const AnimatedOwl = ({
+  isPetting,
+  score,
+}: {
+  isPetting: boolean;
+  score: number;
+}) => {
+  // Determine expression based on score
+  const getExpression = () => {
+    if (isPetting) return "happy";
+    if (score >= 80) return "awake";
+    if (score >= 60) return "neutral";
+    return "sad";
+  };
+
+  const expression = getExpression();
+
+  return (
+    <svg
+      viewBox="0 0 200 200"
+      className="w-full h-full drop-shadow-xl"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      {/* Body */}
+      <motion.ellipse
+        cx="100"
+        cy="110"
+        rx="65"
+        ry="75"
+        fill="#1E293B"
+        stroke="#2BEE9D"
+        strokeWidth="3"
+        animate={{
+          ry: isPetting ? 70 : 75,
+          cy: isPetting ? 115 : 110,
+        }}
+        transition={{ type: "spring", stiffness: 400, damping: 15 }}
+      />
+
+      {/* Belly */}
+      <ellipse cx="100" cy="125" rx="45" ry="50" fill="#334155" opacity="0.6" />
+
+      {/* Belly Details (Feathers) */}
+      <path
+        d="M 85 110 Q 100 120 115 110 M 80 130 Q 100 140 120 130 M 85 150 Q 100 160 115 150"
+        stroke="#475569"
+        strokeWidth="2"
+        fill="none"
+        strokeLinecap="round"
+      />
+
+      {/* Left Wing */}
+      <motion.path
+        d="M 35 110 Q 10 150 45 165 Z"
+        fill="#0F172A"
+        stroke="#2BEE9D"
+        strokeWidth="2"
+        style={{ originX: "35px", originY: "110px" }}
+        animate={{ rotate: isPetting ? -20 : expression === "sad" ? 10 : 0 }}
+      />
+
+      {/* Right Wing */}
+      <motion.path
+        d="M 165 110 Q 190 150 155 165 Z"
+        fill="#0F172A"
+        stroke="#2BEE9D"
+        strokeWidth="2"
+        style={{ originX: "165px", originY: "110px" }}
+        animate={{ rotate: isPetting ? 20 : expression === "sad" ? -10 : 0 }}
+      />
+
+      {/* Ears / Horns */}
+      <motion.path
+        d="M 50 60 L 35 25 L 80 45 Z"
+        fill="#1E293B"
+        stroke="#2BEE9D"
+        strokeWidth="2"
+        style={{ originX: "50px", originY: "60px" }}
+        animate={{ rotate: expression === "sad" ? -15 : 0 }}
+      />
+      <motion.path
+        d="M 150 60 L 165 25 L 120 45 Z"
+        fill="#1E293B"
+        stroke="#2BEE9D"
+        strokeWidth="2"
+        style={{ originX: "150px", originY: "60px" }}
+        animate={{ rotate: expression === "sad" ? 15 : 0 }}
+      />
+
+      {/* Eye Socket Background // Glasses frame */}
+      <path
+        d="M 45 75 C 60 55, 90 55, 100 75 C 110 55, 140 55, 155 75 C 150 100, 110 100, 100 85 C 90 100, 50 100, 45 75 Z"
+        fill="#334155"
+      />
+
+      {/* Eyes */}
+      {expression === "awake" || expression === "happy" ? (
+        <>
+          <circle cx="75" cy="75" r="16" fill="#F8FAFC" />
+          <circle cx="125" cy="75" r="16" fill="#F8FAFC" />
+
+          <motion.circle
+            cx="75"
+            cy="75"
+            r="8"
+            fill="#2BEE9D"
+            animate={
+              isPetting
+                ? { scale: [1, 1.2, 1] }
+                : { cx: [75, 76, 74, 75], cy: [75, 75, 76, 75] }
+            }
+            transition={{ duration: 2, repeat: Infinity }}
+          />
+          <motion.circle
+            cx="125"
+            cy="75"
+            r="8"
+            fill="#2BEE9D"
+            animate={
+              isPetting
+                ? { scale: [1, 1.2, 1] }
+                : { cx: [125, 126, 124, 125], cy: [75, 75, 76, 75] }
+            }
+            transition={{ duration: 2, repeat: Infinity }}
+          />
+
+          {expression === "happy" && (
+            <>
+              {/* Happy curves over eyes */}
+              <path
+                d="M 60 65 Q 75 55 90 65"
+                stroke="#2BEE9D"
+                strokeWidth="3"
+                fill="none"
+                strokeLinecap="round"
+              />
+              <path
+                d="M 110 65 Q 125 55 140 65"
+                stroke="#2BEE9D"
+                strokeWidth="3"
+                fill="none"
+                strokeLinecap="round"
+              />
+            </>
+          )}
+        </>
+      ) : expression === "sad" ? (
+        <>
+          {/* Sad Eyes */}
+          <circle cx="75" cy="75" r="14" fill="#F8FAFC" />
+          <circle cx="125" cy="75" r="14" fill="#F8FAFC" />
+
+          {/* Sad Eyelids (slanting downwards) */}
+          <path d="M 55 70 Q 75 60 90 85 Z" fill="#1E293B" />
+          <path d="M 145 70 Q 125 60 110 85 Z" fill="#1E293B" />
+
+          <motion.circle
+            cx="78"
+            cy="80"
+            r="5"
+            fill="#2BEE9D"
+            animate={{ y: [0, 1, 0] }}
+            transition={{ duration: 3, repeat: Infinity }}
+          />
+          <motion.circle
+            cx="122"
+            cy="80"
+            r="5"
+            fill="#2BEE9D"
+            animate={{ y: [0, 1, 0] }}
+            transition={{ duration: 3, repeat: Infinity }}
+          />
+
+          {/* Tear drop */}
+          <motion.path
+            d="M 70 88 C 70 92, 74 92, 74 88 C 74 84, 72 82, 72 82 C 72 82, 70 84, 70 88 Z"
+            fill="#38BDF8"
+            animate={{ y: [0, 15, 20], opacity: [0, 1, 0] }}
+            transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
+          />
+        </>
+      ) : (
+        // Neutral
+        <>
+          <circle cx="75" cy="75" r="14" fill="#F8FAFC" />
+          <circle cx="125" cy="75" r="14" fill="#F8FAFC" />
+          {/* Half-closed lids */}
+          <path d="M 58 70 L 92 70" stroke="#1E293B" strokeWidth="12" />
+          <path d="M 108 70 L 142 70" stroke="#1E293B" strokeWidth="12" />
+          <circle cx="75" cy="78" r="6" fill="#2BEE9D" />
+          <circle cx="125" cy="78" r="6" fill="#2BEE9D" />
+        </>
+      )}
+
+      {/* Beak */}
+      <motion.path
+        d="M 95 85 L 105 85 L 100 100 Z"
+        fill="#FBBF24"
+        animate={
+          isPetting
+            ? { y: [0, 2, 0] }
+            : expression === "sad"
+              ? { scaleY: 0.8, y: 3 }
+              : {}
+        }
+        transition={{ duration: 0.2, repeat: isPetting ? 2 : 0 }}
+      />
+
+      {/* Feet */}
+      <path
+        d="M 75 180 L 70 190 M 75 180 L 80 190 M 75 180 L 75 192"
+        stroke="#FBBF24"
+        strokeWidth="3"
+        strokeLinecap="round"
+      />
+      <path
+        d="M 125 180 L 120 190 M 125 180 L 130 190 M 125 180 L 125 192"
+        stroke="#FBBF24"
+        strokeWidth="3"
+        strokeLinecap="round"
+      />
+    </svg>
+  );
+};
 
 export default function Home({
   onNavigate,
   sleepSchedule,
   onBellClick,
+  readinessScore,
 }: HomeProps) {
   const [isPetting, setIsPetting] = useState(false);
+  const score = readinessScore;
 
   const calculateDuration = (start: string, end: string) => {
     const [startH, startM] = start.split(":").map(Number);
@@ -41,7 +270,7 @@ export default function Home({
 
   const handlePetOwl = () => {
     setIsPetting(true);
-    setTimeout(() => setIsPetting(false), 300);
+    setTimeout(() => setIsPetting(false), 800);
   };
 
   // Animation variants
@@ -105,7 +334,7 @@ export default function Home({
                 isPetting
                   ? {
                       scale: [1, 0.95, 1.05, 1],
-                      rotate: [0, -5, 5, 0],
+                      rotate: [0, -2, 2, 0],
                     }
                   : {
                       y: [0, -8, 0],
@@ -120,13 +349,9 @@ export default function Home({
                       ease: "easeInOut",
                     }
               }
-              className="relative z-10 w-40 h-40 bg-gradient-to-br from-slate-800 to-slate-900 rounded-full border-2 border-primary/30 flex items-center justify-center overflow-hidden shadow-[0_0_30px_rgba(43,238,157,0.15)]"
+              className="relative z-10 w-40 h-40 bg-gradient-to-br from-slate-800/80 to-slate-900/80 rounded-full border-2 border-primary/30 flex items-center justify-center shadow-[0_0_30px_rgba(43,238,157,0.15)] backdrop-blur-sm p-4"
             >
-              <img
-                src="https://images.unsplash.com/photo-1543332143-4e8c27e3256f?q=80&w=400&auto=format&fit=crop"
-                alt="Owl"
-                className={`w-full h-full object-cover transition-all duration-300 ${isPetting ? "opacity-100 scale-110 sepia-0" : "opacity-80 mix-blend-luminosity hover:scale-105 hover:opacity-90"}`}
-              />
+              <AnimatedOwl isPetting={isPetting} score={score} />
             </motion.div>
           </div>
           <div className="mt-4 flex flex-col items-center">
@@ -137,7 +362,12 @@ export default function Home({
               Hootie
             </motion.h1>
             <p className="text-sm font-medium text-primary">
-              Level 12 Sleeper • Ready to rest
+              Level 12 Sleeper •{" "}
+              {score >= 80
+                ? "Ready to learn"
+                : score >= 60
+                  ? "Tired but okay"
+                  : "Needs sleep"}
             </p>
             <p className="text-[10px] text-slate-500 mt-1 uppercase tracking-wider">
               Tap to pet
@@ -158,10 +388,10 @@ export default function Home({
             <div className="flex justify-between items-end">
               <div>
                 <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1 group-hover:text-slate-300 transition-colors">
-                  Circadian Alignment
+                  Concentration
                 </p>
                 <p className="text-4xl font-bold text-slate-100 leading-none">
-                  88%
+                  {score}%
                 </p>
               </div>
               <div className="flex items-center gap-1 text-sm font-bold text-primary bg-primary/10 px-2 py-1 rounded-full">
@@ -172,9 +402,9 @@ export default function Home({
             <div className="w-full h-1.5 bg-slate-800 rounded-full mt-4 overflow-hidden">
               <motion.div
                 initial={{ width: 0 }}
-                animate={{ width: "88%" }}
+                animate={{ width: `${score}%` }}
                 transition={{ duration: 1, delay: 0.5, ease: "easeOut" }}
-                className="h-full bg-primary rounded-full relative"
+                className={`h-full rounded-full relative ${score >= 80 ? "bg-primary" : score >= 60 ? "bg-yellow-400" : "bg-red-500"}`}
               >
                 <div className="absolute top-0 left-0 right-0 bottom-0 bg-white/30 animate-pulse"></div>
               </motion.div>
