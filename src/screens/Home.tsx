@@ -398,9 +398,34 @@ export default function Home({
                   {score}%
                 </p>
               </div>
-              <div className="flex items-center gap-1 text-sm font-bold text-primary bg-primary/10 px-2 py-1 rounded-full">
-                <TrendingUp size={16} />
-                <span>+4%</span>
+              <div className="flex items-center gap-1 text-sm font-bold text-slate-100">
+                {/* Dynamically calculate a fake trend for demonstration purposes based on the current score */}
+                {(() => {
+                  // If score is good, trend is positive. If bad, negative.
+                  const diff =
+                    score > 70
+                      ? Math.floor(score / 20)
+                      : -Math.floor((100 - score) / 20);
+                  const isPositive = diff >= 0;
+                  const sign = isPositive ? "+" : "";
+                  const colorClass = isPositive
+                    ? "text-primary bg-primary/10"
+                    : "text-red-400 bg-red-400/10";
+                  return (
+                    <div
+                      className={`flex items-center gap-1 px-2 py-1 rounded-full ${colorClass}`}
+                    >
+                      <TrendingUp
+                        size={16}
+                        className={!isPositive ? "rotate-180" : ""}
+                      />
+                      <span>
+                        {sign}
+                        {diff}%
+                      </span>
+                    </div>
+                  );
+                })()}
               </div>
             </div>
             <div className="w-full h-1.5 bg-slate-800 rounded-full mt-4 overflow-hidden">
@@ -419,7 +444,7 @@ export default function Home({
         <motion.div variants={itemVariants} className="px-4 py-4">
           <div className="flex justify-between items-end mb-3 px-1">
             <h3 className="text-xs font-bold text-slate-400 uppercase tracking-widest">
-              Upcoming Exam
+              Upcoming
             </h3>
             <button
               onClick={() => onNavigate("planner")}
